@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.Events;
 
 public class UnitPanelManager : MonoBehaviour
 {
@@ -24,6 +25,16 @@ public class UnitPanelManager : MonoBehaviour
         ShowUnits("Space"); // Default view
     }
 
+    private GameObject currentUnit; // Reference to the currently spawned unit
+    void Update()
+    {
+        // If a unit is currently being placed, follow the mouse
+        if (currentUnit != null)
+        {
+            FollowMouse();
+        }
+    }
+
     void ShowUnits(string type)
     {
         // Clear previous units
@@ -35,8 +46,23 @@ public class UnitPanelManager : MonoBehaviour
         // Determine which units to show based on type
         List<GameObject> unitsToShow = type == "Ground" ? groundUnits : spaceUnits;
 
+        // Get the selected faction as an index
+        int selectedFactionIndex = factionDropdown.value;
+        UnitFaction.Faction selectedFaction = (UnitFaction.Faction)selectedFactionIndex;
+
+        // Filter units based on the selected faction
+        List<GameObject> filteredUnits = new List<GameObject>();
+        foreach (var unit in unitsToShow)
+        {
+            UnitFaction unitFaction = unit.GetComponent<UnitFaction>();
+            if (unitFaction.faction == selectedFaction)
+            {
+                filteredUnits.Add(unit);
+            }
+        }
+
         // Instantiate new unit items
-        foreach (var unitPrefab in unitsToShow)
+        foreach (var unitPrefab in filteredUnits)
         {
             GameObject newButton = Instantiate(unitButtonPrefab, contentPanel);
             UnitButton unitButton = newButton.GetComponent<UnitButton>();
@@ -45,7 +71,32 @@ public class UnitPanelManager : MonoBehaviour
             Sprite unitSprite = unitPrefab.GetComponent<SpriteRenderer>().sprite;
 
             // Setup the button with the unit's image and an example onClick action
-            unitButton.Setup(unitSprite, () => Debug.Log("Unit Selected: " + unitPrefab.name));
+            unitButton.Setup(unitSprite, () => StartPlacingUnit(unitPrefab));
         }
     }
+
+    void StartPlacingUnit(GameObject unitPrefab)
+    {
+        if (currentUnit != null)
+        {
+            Destroy(currentUnit);
+        }
+        currentUnit = Instantiate(unitPrefab);
+        currentUnit.GetComponent<Collider2D>().enabled = false; // Disable collider while placing
+    }
+
+    void FollowMouse()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = 0; // Ensure the z-axis is always set to zero
+        currentUnit.transform.position = mousePosition;
+
+        // Place the unit when left mouse button is clicked
+        if (Input.GetMouseButtonDown(0))
+        {
+            currentUnit.GetComponent<Collider2D>().enabled = true; // Re-enable collider
+            currentUnit = null; // Stop following the mouse
+        }
+    }
+
 }
