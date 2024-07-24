@@ -79,10 +79,11 @@ public class UnitPanelManager : MonoBehaviour
     {
         if (currentUnit != null)
         {
-            Destroy(currentUnit);
+            currentUnit.GetComponent<SelectableUnit>().enabled = true; // Enable the selection script
         }
         currentUnit = Instantiate(unitPrefab);
-        currentUnit.GetComponent<Collider2D>().enabled = false; // Disable collider while placing
+        currentUnit.GetComponent<SelectableUnit>().enabled = false; // Disable the selection script while placing
+        currentUnit.layer = LayerMask.NameToLayer("Ignore Raycast"); // Optionally ignore raycast for placement
     }
 
     void FollowMouse()
@@ -94,7 +95,8 @@ public class UnitPanelManager : MonoBehaviour
         // Place the unit when left mouse button is clicked
         if (Input.GetMouseButtonDown(0))
         {
-            currentUnit.GetComponent<Collider2D>().enabled = true; // Re-enable collider
+            currentUnit.GetComponent<SelectableUnit>().enabled = true; // Re-enable selection script
+            currentUnit.layer = LayerMask.NameToLayer("Default"); // Reset layer if changed
             currentUnit = null; // Stop following the mouse
         }
     }

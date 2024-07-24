@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5373339013260546540}
   - component: {fileID: -226345489240358918}
   - component: {fileID: -5631447258078178221}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CIS Ship 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

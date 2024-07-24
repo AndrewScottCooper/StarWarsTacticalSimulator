@@ -559,7 +559,7 @@ MonoBehaviour:
   - {fileID: 6642186087182106620, guid: 55371e02d79027e4ab56fb8f1bd94980, type: 3}
   - {fileID: 6642186087182106620, guid: 55371e02d79027e4ab56fb8f1bd94980, type: 3}
   - {fileID: 6642186087182106620, guid: 55371e02d79027e4ab56fb8f1bd94980, type: 3}
-  - {fileID: 6642186087182106620, guid: 55371e02d79027e4ab56fb8f1bd94980, type: 3}
+  - {fileID: 5490945962936872601, guid: b0a47dc0648da644bb8374a204b435dd, type: 3}
   - {fileID: 6642186087182106620, guid: 55371e02d79027e4ab56fb8f1bd94980, type: 3}
   - {fileID: 6642186087182106620, guid: 55371e02d79027e4ab56fb8f1bd94980, type: 3}
   - {fileID: 6642186087182106620, guid: 55371e02d79027e4ab56fb8f1bd94980, type: 3}
@@ -2022,7 +2022,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -2048,7 +2048,7 @@ Transform:
   m_GameObject: {fileID: 961739749}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2832,8 +2832,8 @@ Transform:
   m_GameObject: {fileID: 1549556120}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.25, z: -2}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalScale: {x: 1.25, y: 1.25, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
