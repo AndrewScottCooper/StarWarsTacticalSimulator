@@ -24,6 +24,23 @@ public class SelectableUnit : MonoBehaviour
             mousePosition.z = 0; // Ensure z position remains 0
             transform.position = mousePosition;
             Debug.Log("Moving to: " + mousePosition);
+
+            // Check for delete key press
+            if (Input.GetKeyDown(KeyCode.Delete))
+            {
+                DeleteUnit();
+            }
+
+
         }
     }
+
+    public void DeleteUnit()
+    {
+        if (isSelected)
+        {
+            Destroy(gameObject);
+        }
+    }
+
 }
