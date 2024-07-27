@@ -6,6 +6,7 @@ using Google.Apis.Util.Store;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using UnityEngine;
@@ -15,6 +16,8 @@ public class GoogleSheetsOAuthManager : MonoBehaviour
     static readonly string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
     static readonly string ApplicationName = "Unity Google Sheets OAuth";
     SheetsService service;
+    public GameObject planetUIPrefab;
+    public Transform contentParent; // The parent object to hold UI elements
 
     void Start()
     {
@@ -45,7 +48,7 @@ public class GoogleSheetsOAuthManager : MonoBehaviour
 
         //Reading the 5th sheet (Galatic planet stats) (index 4)
         string spreadsheetId = "11HFEG9JwHWMdfLer6Kj9g8Y2s-mQgDHvvEDrwDhJxJQ";
-        string sheetName = GetSheetNameByIndex(spreadsheetId, 7);
+        string sheetName = GetSheetNameByIndex(spreadsheetId, 8);
         if (!string.IsNullOrEmpty(sheetName))
         {
             ReadSheetData(spreadsheetId, sheetName);
@@ -77,14 +80,79 @@ public class GoogleSheetsOAuthManager : MonoBehaviour
 
         if (values != null && values.Count > 0)
         {
-            foreach (var row in values)
+            List<Planet> planets = new List<Planet>();
+            for (int i = 1; i < values.Count; i++) // Start at 1 to skip the header row
             {
-                Debug.Log(string.Join(", ", row));
+                IList<object> row = values[i];
+                if (row.Count < 14)
+                {
+                    Debug.LogWarning($"Row {i} does not have enough columns.");
+                    continue;
+                }
+
+                Planet planet = new Planet
+                {
+                    PlanetName = row[0].ToString(),
+                    Character = row[1].ToString(),
+                    Specialisation = row[2].ToString(),
+                    Population = ParseFloat(row[3].ToString()),
+                    GDP = ParseFloat(row[4].ToString()),
+                    SectorTax = ParseFloat(row[5].ToString()),
+                    BaseCredits = ParseFloat(row[6].ToString()),
+                    MilitaryCapacity = ParseFloat(row[7].ToString()),
+                    Stability = ParseFloat(row[8].ToString()),
+                    NetCredits = ParseFloat(row[9].ToString()),
+                    TradeRoutes = row[10].ToString(),
+                    ShipbuildingSlots = ParseFloat(row[11].ToString()),
+                    ArmySlots = ParseFloat(row[12].ToString()),
+                    PlanetaryModifiers = ParseModifiers(row[13].ToString())
+                };
+                planets.Add(planet);
+            }
+
+            // Display the data in the UI
+            foreach (Planet planet in planets)
+            {
+                CreateUIElement(planet);
             }
         }
         else
         {
             Debug.Log("No data found.");
         }
+    }
+
+    float ParseFloat(string input)
+    {
+        float result;
+        if (float.TryParse(input, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
+        {
+            return result;
+        }
+        else
+        {
+            Debug.LogWarning($"Unable to parse '{input}' as float.");
+            return 0f; // Default value if parsing fails
+        }
+    }
+
+    List<Modifier> ParseModifiers(string modifiersString)
+    {
+        List<Modifier> modifiers = new List<Modifier>();
+        string[] modifierArray = modifiersString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (string modifierName in modifierArray)
+        {
+            Modifier modifier = new Modifier { Name = modifierName.Trim() };
+            modifiers.Add(modifier);
+        }
+        return modifiers;
+    }
+
+    void CreateUIElement(Planet planet)
+    {
+        GameObject newUIElement = Instantiate(planetUIPrefab, contentParent);
+        // Assuming you have a script to set up the UI element with the planet data
+        PlanetUI uiScript = newUIElement.GetComponent<PlanetUI>();
+        uiScript.Setup(planet);
     }
 }
