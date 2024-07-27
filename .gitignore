@@ -72,3 +72,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 Assets/StreamingAssets/client_secret.json
 Assets/StreamingAssets/client_secret.json.meta
+token.json/Google.Apis.Auth.OAuth2.Responses.TokenResponse-user
